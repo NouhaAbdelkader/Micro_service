@@ -31,9 +31,8 @@ public class QuestionForum {
     private Date date ;
     @Indexed
     private int totalNbRate ;
-    /*@DBRef
-    @Indexed
-    private UserCourzelo student;*/
+    //private UserDto student;
+    private String studentId;
     @DBRef
     @Indexed
     private Module module;

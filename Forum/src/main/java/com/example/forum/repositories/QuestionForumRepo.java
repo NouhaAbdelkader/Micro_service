@@ -11,5 +11,6 @@ public interface QuestionForumRepo  extends MongoRepository<QuestionForum,String
     List<QuestionForum> findQuestionForumByOrderByDateDesc();
     List<QuestionForum> findQuestionForumByModule(Module module);
     List<QuestionForum> findQuestionForumByTitleContaining(String title);
+    List<QuestionForum> findQuestionForumByStudentId(String userId);
 
 }
