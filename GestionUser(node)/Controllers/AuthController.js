@@ -1,7 +1,7 @@
 // controllers/UserController.js
 const UserService = require('../Services/AuthService');
 const axios = require('axios');
-
+const amqp = require('amqplib');
 
 class UserController {
 
@@ -69,22 +69,47 @@ class UserController {
 
 
     // Méthode pour mettre à jour un utilisateur
+    /* async deleteUser1(req, res) {
+         try {
+             const user = await UserService.deleteUser(req.params.id); // Suppression de l'utilisateur
+             if (!user) {
+                 return res.status(404).json({ message: "User not found" });
+             }
+
+             // Après la suppression de l'utilisateur, appeler l'API Spring Boot pour supprimer ses questions
+             const springBootUrl = `http://localhost:8082/questions/user/${req.params.id}`; // URL vers Spring Boot
+             const response = await axios.delete(springBootUrl); // Requête DELETE pour supprimer les questions de l'utilisateur
+
+             console.log(response.data); // Ajoutez ce log pour vérifier la réponse de Spring Boot
+
+             return res.status(200).json({ message: "User and associated questions deleted successfully" });
+         } catch (error) {
+             console.log(error.message); // Log d'erreur
+             return res.status(500).json({ message: "Error deleting user", error: error.message });
+         }
+     }*/
     async deleteUser(req, res) {
         try {
-            const user = await UserService.deleteUser(req.params.id); // Suppression de l'utilisateur
+            const user = await UserService.deleteUser(req.params.id);
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
             }
 
-            // Après la suppression de l'utilisateur, appeler l'API Spring Boot pour supprimer ses questions
-            const springBootUrl = `http://localhost:8082/questions/user/${req.params.id}`; // URL vers Spring Boot
-            const response = await axios.delete(springBootUrl); // Requête DELETE pour supprimer les questions de l'utilisateur
+            // Connexion à RabbitMQ et envoi du message de suppression des questions
+            const connection = await amqp.connect('amqp://localhost');
+            const channel = await connection.createChannel();
 
-            console.log(response.data); // Ajoutez ce log pour vérifier la réponse de Spring Boot
+            const queue = 'delete-questions-queue';
+            const message = JSON.stringify({ userId: req.params.id });
 
-            return res.status(200).json({ message: "User and associated questions deleted successfully" });
+            await channel.assertQueue(queue, { durable: true });
+            await channel.sendToQueue(queue, Buffer.from(message), { persistent: true });
+
+            console.log("Message envoyé à la file d'attente pour supprimer les questions de l'utilisateur");
+
+            return res.status(200).json({ message: "User deleted, questions will be deleted asynchronously." });
         } catch (error) {
-            console.log(error.message); // Log d'erreur
+            console.log(error.message);
             return res.status(500).json({ message: "Error deleting user", error: error.message });
         }
     }
@@ -102,5 +127,7 @@ class UserController {
         }
     }
 }
+
+
 
 module.exports = new UserController();
