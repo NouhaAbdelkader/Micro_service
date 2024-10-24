@@ -23,18 +23,21 @@ public class QuestionForumImpl {
     private final RestTemplate restTemplate;
 
 
-    public QuestionForum AddQuestion(QuestionForum questionForum, String userId) {
+    public QuestionForum AddQuestion(QuestionForum questionForum, String userId, String moduleId) {
         // Récupérer les informations de l'utilisateur via Node.js (en utilisant l'ID)
         String nodeUserUrl = "http://localhost:4000/api/auth/" + userId;  // Modifier l'URL en fonction de ton serveur Node.js
         UserDto user = restTemplate.getForObject(nodeUserUrl, UserDto.class);
+        String nodeModuleUrl = "http://localhost:4005/api/modules/" + moduleId;
+        ModuleDto module = restTemplate.getForObject(nodeModuleUrl, ModuleDto.class);
 
 
-        if (user != null) {
+        if (user != null && module != null) {
             // Si l'utilisateur est trouvé, on peut ajouter la question
             Date now = new Date();
             questionForum.setTotalNbRate(0);
             questionForum.setDate(now);
             questionForum.setStudentId(userId);
+            questionForum.setModuleId(moduleId);
 
             // Tu peux éventuellement lier l'utilisateur à la question (ex: via un champ `author`)
             return questionForumRepo.save(questionForum);
@@ -64,7 +67,7 @@ public class QuestionForumImpl {
             // Mettre à jour les attributs de la question existante avec les nouvelles valeurs
             existingQuestionOptional.setTitle(updatedQuestion.getTitle());
             existingQuestionOptional.setDescription(updatedQuestion.getDescription());
-            existingQuestionOptional.setModule(updatedQuestion.getModule());
+            existingQuestionOptional.setModuleId(updatedQuestion.getModuleId());
 
             // Sauvegarder les modifications dans la base de données
             return questionForumRepo.save(existingQuestionOptional);

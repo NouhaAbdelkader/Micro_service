@@ -33,9 +33,8 @@ public class QuestionForum {
     private int totalNbRate ;
     //private UserDto student;
     private String studentId;
-    @DBRef
-    @Indexed
-    private Module module;
+    private String moduleId;
+
     @DBRef
     private List<Answer> answers;
     @DBRef

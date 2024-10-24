@@ -9,8 +9,9 @@ public interface QuestionForumRepo  extends MongoRepository<QuestionForum,String
     QuestionForum findQuestionForumById(String id);
 
     List<QuestionForum> findQuestionForumByOrderByDateDesc();
-    List<QuestionForum> findQuestionForumByModule(Module module);
+
     List<QuestionForum> findQuestionForumByTitleContaining(String title);
     List<QuestionForum> findQuestionForumByStudentId(String userId);
+ List<QuestionForum> findQuestionForumByModuleId(String moduleId);
 
 }

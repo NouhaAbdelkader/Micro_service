@@ -18,10 +18,10 @@ public class QuestionForumController {
     RateQuestionServiceImpl rateQuestionServiceImpl;
 
     // Méthode POST pour créer une question avec l'ID utilisateur en paramètre
-    @PostMapping("/create/{userId}")
-    public QuestionForum createQuestion(@RequestBody QuestionForum q, @PathVariable String userId) throws InterruptedException {
+    @PostMapping("/create/{userId}/{moduleId}")
+    public QuestionForum createQuestion(@RequestBody QuestionForum q, @PathVariable String userId,@PathVariable String moduleId) throws InterruptedException {
         Thread.sleep(1000);
-        return questionForumImpll.AddQuestion(q, userId);
+        return questionForumImpll.AddQuestion(q, userId,moduleId);
     }
     @GetMapping("/questionsbyUser/{userId}")
     public List<QuestionForum> getQuestionsByUserId(@PathVariable String userId) {

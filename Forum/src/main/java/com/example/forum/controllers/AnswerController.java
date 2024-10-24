@@ -2,7 +2,6 @@ package com.example.forum.controllers;
 
 
 import com.example.forum.entities.Answer;
-import com.example.forum.entities.QuestionForum;
 import com.example.forum.services.AnswerServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
