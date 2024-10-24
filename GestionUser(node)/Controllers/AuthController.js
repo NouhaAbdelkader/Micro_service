@@ -90,29 +90,44 @@ class UserController {
      }*/
     async deleteUser(req, res) {
         try {
+            // Supprimer l'utilisateur
             const user = await UserService.deleteUser(req.params.id);
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
             }
 
-            // Connexion à RabbitMQ et envoi du message de suppression des questions
+            // Connexion à RabbitMQ
             const connection = await amqp.connect('amqp://localhost');
             const channel = await connection.createChannel();
 
-            const queue = 'delete-questions-queue';
-            const message = JSON.stringify({ userId: req.params.id });
+            const userId = req.params.id;
+            const message = JSON.stringify({ userId });
 
-            await channel.assertQueue(queue, { durable: true });
-            await channel.sendToQueue(queue, Buffer.from(message), { persistent: true });
+            // File d'attente pour supprimer les questions
+            const deleteQuestionsQueue = 'delete-questions-queue';
+            await channel.assertQueue(deleteQuestionsQueue, { durable: true });
+            await channel.sendToQueue(deleteQuestionsQueue, Buffer.from(message), { persistent: true });
 
-            console.log("Message envoyé à la file d'attente pour supprimer les questions de l'utilisateur");
+            console.log(`Message envoyé à ${deleteQuestionsQueue} pour supprimer les questions de l'utilisateur ${userId}`);
 
-            return res.status(200).json({ message: "User deleted, questions will be deleted asynchronously." });
+            // File d'attente pour supprimer les réponses
+            const deleteAnswersQueue = 'delete-answers-queue';
+            await channel.assertQueue(deleteAnswersQueue, { durable: true });
+            await channel.sendToQueue(deleteAnswersQueue, Buffer.from(message), { persistent: true });
+
+            console.log(`Message envoyé à ${deleteAnswersQueue} pour supprimer les réponses de l'utilisateur ${userId}`);
+
+            // Répondre à l'API
+            return res.status(200).json({
+                message: "User deleted, questions and answers will be deleted asynchronously."
+            });
+
         } catch (error) {
-            console.log(error.message);
+            console.error(error.message);
             return res.status(500).json({ message: "Error deleting user", error: error.message });
         }
     }
+
 
     // Méthode pour supprimer un utilisateur
     async updateUser(req, res) {
