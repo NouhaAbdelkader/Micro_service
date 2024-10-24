@@ -30,6 +30,19 @@ public class RabbitMqListener {
             logger.error("Error deleting questions for user", e);
         }
     }
+    @RabbitListener(queues = "delete-questions-queue-by-module")
+    public void deleteQuestionsForModule(String message) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> map = mapper.readValue(message, Map.class);
+            String moduleId = map.get("moduleId");
+
+            questionForum.deleteQuestionsByModuleId(moduleId);
+            System.out.println("Questions deleted for module: " + moduleId);
+        } catch (Exception e) {
+            logger.error("Error deleting questions for module", e);
+        }
+    }
 
     @RabbitListener(queues = "delete-answers-queue")
     public void deleteAnswersForUser(String message) {

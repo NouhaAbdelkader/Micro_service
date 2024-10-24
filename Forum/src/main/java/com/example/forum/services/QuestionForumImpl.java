@@ -118,6 +118,14 @@ public class QuestionForumImpl {
             }
         }
     }
+    public void deleteQuestionsByModuleId(String moduleId) {
+        List<QuestionForum> questions = questionForumRepo.findQuestionForumByModuleId(moduleId);
+        if (questions != null) {
+            for (QuestionForum question : questions) {
+                deleteQuestionById(question.getId());
+            }
+        }
+    }
     public QuestionForum updateQuestionRate(QuestionForum updatedQuestion) {
         QuestionForum existingQuestionOptional = questionForumRepo.findQuestionForumById(updatedQuestion.getId());
 
@@ -136,6 +144,10 @@ public class QuestionForumImpl {
 
     public List<QuestionForum> getQuestionByTitle(String title){
         return questionForumRepo.findQuestionForumByTitleContaining(title);
+    }
+
+    public List<QuestionForum> getQuestionByModule(String moduleId){
+        return questionForumRepo.findQuestionForumByModuleId(moduleId);
     }
 
 

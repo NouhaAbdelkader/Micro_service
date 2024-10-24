@@ -63,6 +63,10 @@ public class QuestionForumController {
     public List<QuestionForum> getQuestionbytitle( @PathVariable String title) {
         return questionForumImpll.getQuestionByTitle(title);
     }
+    @GetMapping("/searchBytitle/{moduleId}")
+    public List<QuestionForum> getQuestionbymoduleId( @PathVariable String moduleId) {
+        return questionForumImpll.getQuestionByModule(moduleId);
+    }
     @PostMapping("/Rating/create/{questionId}/{userId}")
     public RateQuestion rateQuestion(@RequestBody RateQuestion rate, @PathVariable String questionId, @PathVariable String userId) {
 
