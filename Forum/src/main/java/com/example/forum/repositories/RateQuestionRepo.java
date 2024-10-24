@@ -12,4 +12,5 @@ public interface RateQuestionRepo extends MongoRepository<RateQuestion,String> {
     RateQuestion findRateQuestionById(String id);
     //RateQuestion findRateQuestionByQuestionForumAndUser(QuestionForum q, UserCourzelo u);
     List<RateQuestion> findRateQuestionByQuestionForum(QuestionForum q);
+    RateQuestion findRateQuestionByUserIdAndAndQuestionForum(String userId, QuestionForum q);
 }

@@ -24,7 +24,6 @@ public class RateQuestion {
     @Indexed
     @DBRef
     private QuestionForum questionForum;
-   /* @Indexed
-    @DBRef
-    private UserCourzelo user;*/
+
+    private String userId;
 }

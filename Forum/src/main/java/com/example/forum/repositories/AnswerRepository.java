@@ -18,6 +18,8 @@ public interface AnswerRepository extends MongoRepository<Answer, String> {
 
     List<Answer> findAnswerByOrderByDateAsc() ;
     List<Answer> findAnswersByQuestionForumOrderByNbrVoteDesc(QuestionForum questionForum);
+    List<Answer> findAnswersByUserId(String userId);
+
 
 
 

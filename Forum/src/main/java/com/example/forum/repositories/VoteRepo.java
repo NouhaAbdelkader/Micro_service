@@ -13,5 +13,6 @@ public interface VoteRepo  extends MongoRepository<Votes,String> {
    // Votes findVotesByTeacherAndAnswer(UserCourzelo u, Answer a);
     List<Votes> findVotesByAnswer(Answer a);
     void deleteAll(Iterable<? extends Votes> votes);
+    Votes findVotesByTeacherIdAndAnswer(String teacherId, Answer a);
 
 }

@@ -34,9 +34,8 @@ public class Answer {
     @Indexed
     @DBRef
     private QuestionForum questionForum;
-   // @Indexed
-   // @DBRef
-   // private UserCourzelo user;
+
+   private String userId;
  
     @DBRef
     private List<Votes> votes;

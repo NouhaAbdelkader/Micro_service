@@ -27,7 +27,5 @@ public class Votes {
     @DBRef
     @Indexed
     private Answer answer;
-    /*@DBRef
-    @Indexed
-    private UserCourzelo teacher;*/
+    private String teacherId;
 }

@@ -1,7 +1,9 @@
 package com.example.forum.controllers;
 
 import com.example.forum.entities.QuestionForum;
+import com.example.forum.entities.RateQuestion;
 import com.example.forum.services.QuestionForumImpl;
+import com.example.forum.services.RateQuestionServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,7 @@ import java.util.List;
 @RequestMapping("/questions")
 public class QuestionForumController {
     QuestionForumImpl questionForumImpll;
+    RateQuestionServiceImpl rateQuestionServiceImpl;
 
     // Méthode POST pour créer une question avec l'ID utilisateur en paramètre
     @PostMapping("/create/{userId}")
@@ -60,5 +63,32 @@ public class QuestionForumController {
     public List<QuestionForum> getQuestionbytitle( @PathVariable String title) {
         return questionForumImpll.getQuestionByTitle(title);
     }
+    @PostMapping("/Rating/create/{questionId}/{userId}")
+    public RateQuestion rateQuestion(@RequestBody RateQuestion rate, @PathVariable String questionId, @PathVariable String userId) {
 
+        return rateQuestionServiceImpl.rateQuestion(rate, questionId, userId);
+
+    }
+    @GetMapping("/Rate/{id}")
+    public RateQuestion getRateQuestionById(String id) {
+        return rateQuestionServiceImpl.getRateQuestionById(id);
+    }
+    @PutMapping("/Rate/update")
+    public RateQuestion updateRateQuestion(@RequestBody RateQuestion rate) {
+        return rateQuestionServiceImpl.updateRateQuestion(rate);
+    }
+
+    @GetMapping("/Rate/{idQ}/{idU}")
+    public RateQuestion getRateQuestionByQuestionAndUser(@PathVariable String idQ, @PathVariable String idU) {
+        return rateQuestionServiceImpl.getRateQuestionByQuestionAndUser(idQ, idU);
+    }
+
+    @GetMapping("/getTotalRateAverage/{idQ}/")
+    public float getTotalRte(@PathVariable String idQ) {
+        return rateQuestionServiceImpl.avargeRateForQuestion(idQ);
+    }
+    @GetMapping("/orderByRatingAverge")
+    public List<QuestionForum> getQuestionOrderByRatingAverge() {
+        return rateQuestionServiceImpl.getQuestionOrderByRate();
+    }
 }
