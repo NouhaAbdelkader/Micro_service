@@ -21,8 +21,8 @@ public class GatewayApplication {
                 .route("Evaluation",r->r.path("/evaluation/**")
                         .uri("http://localhost:8084/"))
 
-                .route("Calender",r->r.path("/calender/**")
-                        .uri("http://localhost:8086/"))
+                .route("Calendar",r->r.path("/**")
+                        .uri("http://localhost:8086/calendar/"))
 
                 .route("Event",r->r.path("/event/**")
                         .uri("http://localhost:8088/"))
