@@ -25,9 +25,9 @@ public class QuestionForumImpl {
 
     public QuestionForum AddQuestion(QuestionForum questionForum, String userId, String moduleId) {
         // Récupérer les informations de l'utilisateur via Node.js (en utilisant l'ID)
-        String nodeUserUrl = "http://localhost:4000/api/auth/" + userId;  // Modifier l'URL en fonction de ton serveur Node.js
+        String nodeUserUrl = "http://gestionUser:4000/api/auth/" + userId;  // Modifier l'URL en fonction de ton serveur Node.js
         UserDto user = restTemplate.getForObject(nodeUserUrl, UserDto.class);
-        String nodeModuleUrl = "http://localhost:4005/api/modules/" + moduleId;
+        String nodeModuleUrl = "http://gestionLMS:4005/api/modules/" + moduleId;
         ModuleDto module = restTemplate.getForObject(nodeModuleUrl, ModuleDto.class);
 
 

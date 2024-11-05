@@ -24,7 +24,7 @@ public class AnswerServiceImpl {
 
     public Answer createAnswer(Answer answer,String userId, String questionId) {
         QuestionForum question = questionForumRepository.findQuestionForumById(questionId);
-        String nodeUserUrl = "http://localhost:4000/api/auth/" + userId;  // Modifier l'URL en fonction de ton serveur Node.js
+        String nodeUserUrl = "http://gestionUser:4000/api/auth/" + userId;  // Modifier l'URL en fonction de ton serveur Node.js
         UserDto u = restTemplate.getForObject(nodeUserUrl, UserDto.class);
         Date now = new Date();
         if ( question !=null && u!= null) {
