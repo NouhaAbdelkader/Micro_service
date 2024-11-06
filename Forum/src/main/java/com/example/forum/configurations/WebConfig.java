@@ -49,23 +49,7 @@ public class WebConfig implements WebMvcConfigurer {
         return new RestTemplate();
     }
 
-    @Bean
-    public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
-        return new KeycloakSpringBootConfigResolver();
-    }
 
-    @Bean
-    public Keycloak getInstance() {
-        return KeycloakBuilder.builder()
-                .serverUrl("http://keycloak:8180/auth")
-                .realm("MicroProject")
-                .clientId("Forum")
-                .clientSecret("L9OZv9XYN44dhvoDMY1OZMxDKxlErqFs")
-                .username("najiba")
-                .password("admin123")
-                .build();
-
-    }
 }
 
   /*  public Keycloak getInstance() {
