@@ -1,10 +1,17 @@
 package com.example.forum.configurations;
 
+/*import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;*/
+import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Queue;
@@ -12,28 +19,64 @@ import java.util.Queue;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-                .addMapping("/**")
-                .allowedOrigins("http://localhost:4200")
+                .addResourceHandler("/assets/js/**")
+                .addResourceLocations("classpath:/static/assets/js/")
+                .setCachePeriod(3600)
+                .resourceChain(true);
+    }
 
-              // Replace this with your Angular application's domain
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:4200", "http://localhost:8082/api/", "http://anotherdomain.com")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
-
-
     }
+
+
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
         configurer
-                .setUseTrailingSlashMatch(false) // Permet de gérer les routes paramétrées sans barre oblique à la fin
-                .setUseSuffixPatternMatch(false); // Permet de gérer les extensions de fichier dans les URL (par exemple, .html)
+                .setUseTrailingSlashMatch(false)
+                .setUseSuffixPatternMatch(false);
     }
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
 
+    @Bean
+    public KeycloakSpringBootConfigResolver keycloakConfigResolver() {
+        return new KeycloakSpringBootConfigResolver();
+    }
 
+    @Bean
+    public Keycloak getInstance() {
+        return KeycloakBuilder.builder()
+                .serverUrl("http://keycloak:8180/auth")
+                .realm("MicroProject")
+                .clientId("Forum")
+                .clientSecret("L9OZv9XYN44dhvoDMY1OZMxDKxlErqFs")
+                .username("najiba")
+                .password("admin123")
+                .build();
+
+    }
 }
+
+  /*  public Keycloak getInstance() {
+        return KeycloakBuilder.builder()
+                .serverUrl("http://keycloak:8180/auth")
+                .realm("MicroProject")
+                .clientId("admin-cli")
+                .username("admin") // Assurez-vous qu'il est admin
+                .password("admin")
+                .build();
+    }*/
+
+
+
