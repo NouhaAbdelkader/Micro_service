@@ -5,6 +5,7 @@ import com.example.forum.entities.UserDto;
 import com.example.forum.entities.Votes;
 import com.example.forum.repositories.AnswerRepository;
 import com.example.forum.repositories.VoteRepo;
+import jakarta.ws.rs.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +42,7 @@ public class VoteServiceImpl {
 
     public Votes add(Votes vote, String userId,String answerId) {
 
-        String nodeUserUrl = "http://localhost:4000/api/auth/" + userId;  // Modifier l'URL en fonction de ton serveur Node.js
+        String nodeUserUrl = "http://gestionUser:4000/api/auth/" + userId;  // Modifier l'URL en fonction de ton serveur Node.js
         UserDto u = restTemplate.getForObject(nodeUserUrl, UserDto.class);
         Answer a = answerRepository.findAnswerById(answerId);
         Date now= new Date();
@@ -94,13 +95,32 @@ public class VoteServiceImpl {
         update_answer_nb_vote(-1, vote); // Mettre à jour le nombre de votes associé
 
     }
-    public Votes  getVoteByUserAndAnswer(String userId, String answerId){
+    public Votes getVoteByUserAndAnswer(String userId, String answerId) {
+        LOGGER.info("Début de la récupération du vote pour UserID: {} et AnswerID: {}", userId, answerId);
 
-        Answer a= answerRepository.findAnswerById(answerId);
-        if(userId!=null && a!=null){
-            return voteRepository.findVotesByTeacherIdAndAnswer(userId,a);
+        // Vérification si l'ID utilisateur est null
+        if (userId == null || userId.isEmpty()) {
+            throw new IllegalArgumentException("L'ID utilisateur ne doit pas être null ou vide.");
         }
-        return null ;
+
+        // Récupération de l'entité Answer basée sur answerId
+        Answer answer = answerRepository.findAnswerById(answerId);
+        if (answer == null) {
+            throw new IllegalArgumentException("Answer avec l'ID " + answerId + " introuvable.");
+        }
+
+        LOGGER.info("Answer trouvé : {}", answer);
+
+        // Récupérer et retourner le Vote en utilisant l'ID utilisateur et l'entité Answer
+        Votes vote = voteRepository.findVotesByTeacherIdAndAnswer(userId, answer);
+
+        if (vote == null) {
+            LOGGER.info("Aucun vote trouvé pour UserID: {} et AnswerID: {}", userId, answerId);
+            throw new IllegalArgumentException("Aucun vote trouvé pour cet utilisateur et cette réponse.");
+        }
+
+        LOGGER.info("Vote trouvé : {}", vote);
+        return vote;
     }
 
 
