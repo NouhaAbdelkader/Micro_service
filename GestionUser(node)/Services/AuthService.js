@@ -75,6 +75,10 @@ class UserService {
     async deleteUser(userId) {
         return await User.findByIdAndDelete(userId);
     }
+    // Méthode pour obtenir les utilisateurs par spécialité et rôle
+    async getUsersBySpecialityAndRole(speciality, role) {
+        return await User.find({ speciality, role });
+    }
 
 }
 

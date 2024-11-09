@@ -91,6 +91,17 @@ async deleteUser(req, res) {
         return res.status(500).json({ message: "Error deleting user", error: error.message });
     }
 }
-}
 
+    // Méthode pour obtenir les utilisateurs par spécialité et rôle
+    async getUsersBySpecialityAndRole(req, res) {
+        try {
+            const { speciality, role } = req.query;
+            const users = await UserService.getUsersBySpecialityAndRole(speciality, role);
+            return res.status(200).json(users);
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Error fetching users', error: error.message });
+        }
+    }
+}
 module.exports = new UserController();

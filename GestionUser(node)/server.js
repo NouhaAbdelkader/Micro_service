@@ -67,7 +67,7 @@ app.listen(PORT, () => {
 // Gestion de l'arrêt propre
 process.on('SIGINT', () => {
     console.log('Gracefully shutting down');
-    
+
     // Dé-enregistrer le service de Eureka
     client.stop(() => {
         console.log('Eureka client stopped');

@@ -33,6 +33,8 @@ public class GatewayApplication {
                 .route("Project",r->r.path("/project/**")
                         .uri("http://localhost:8085/"))
 
+                .route("User",r->r.path("/api/auth/**")
+                        .uri("http://localhost:4000/"))
                 .route("Recrutement",r->r.path("/recrutement/**")
                         .uri("http://localhost:8087/"))
                 .build();
