@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -20,13 +21,14 @@ import java.util.Map;
 @RestController
 @RequestMapping("/calendar")
 @Tag(name = "Session management")
-@CrossOrigin(origins = "http://localhost:4200")
+//@CrossOrigin(origins = "http://localhost:4200")
 @AllArgsConstructor
 public class SessionController {
     @Autowired
     SessionServiceImpl sessionService;
 
-   @PostMapping("/session/create")
+   @PostMapping("/admin/session/create")
+   @PreAuthorize("hasAuthority('admin')")
    public ResponseEntity<?> createSessionForClassWithSubject(
            @RequestParam String teacherId,
            @RequestParam String classId,
@@ -71,6 +73,8 @@ public class SessionController {
     }
 
     @GetMapping("/session/sessions/{classId}")
+    @PreAuthorize("hasAuthority('user')")
+
     public ResponseEntity<List<Session>> getSessionsByClassId(@PathVariable String classId) {
         List<Session> sessions = sessionService.getSessionsByClassId(classId);
         if (sessions.isEmpty()) {
@@ -98,6 +102,7 @@ public class SessionController {
         return ResponseEntity.ok(users);
     }*/
     @DeleteMapping("/session/delete/{sessionId}")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> deleteSession(@PathVariable String sessionId) {
         try {
             sessionService.deleteSession(sessionId);
@@ -107,6 +112,7 @@ public class SessionController {
         }
     }
     @PutMapping("/session/cancel/{sessionId}")
+    @PreAuthorize("hasAuthority('user')")
     public ResponseEntity<?> cancelSession(@PathVariable String sessionId) {
         try {
             Session canceledSession = sessionService.cancelSession(sessionId);
@@ -154,12 +160,14 @@ public class SessionController {
             return ResponseEntity.notFound().build(); // Session not found or not canceled
         }
     }
-    @GetMapping("/session/Log")
+    @GetMapping("/admin/session/Log")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<List<SessionAuditLog>> getAllSessionAuditLogs() {
         List<SessionAuditLog> sessionAuditLogs = sessionService.getAllSessionAuditLogs();
         return ResponseEntity.ok(sessionAuditLogs);
     }
     @GetMapping("/session/percentage-by-month/{teacherId}")
+    @PreAuthorize("hasAuthority('admin')")
     public Map<String, Integer> getPercentageCatchUpByMonthForTeacher(@PathVariable String teacherId) {
         return sessionService.getPercentageCatchUpByMonthForTeacher(teacherId);
     }

@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  discovery:
+    build: D:/Projet_microservice/Micro_service/eurekaserver
+    ports:
+      - "8761:8761"
+    networks:
+      - mynetwork
+
+  gateway:
+    build: D:/Projet_microservice/Micro_service/Gateway
+    ports:
+      - "8083:8083"
+    environment:
+      - EUREKA_SERVER_URI=http://discovery:8761/eureka
+      - KEYCLOAK_AUTH_SERVER_URL=http://keycloak:8080/auth
+      - KEYCLOAK_REALM=CouzeloKeycloak
+      - KEYCLOAK_CLIENT_ID=Gateway
+      - KEYCLOAK_CLIENT_SECRET=hoMzVBGczVK0hK4KcFk9SRMrF3uHySbG
+    networks:
+      - mynetwork
+    depends_on:
+      - discovery
+      - keycloak
+
+  calendar:
+    build: D:/Projet_microservice/Micro_service/Calender
+    ports:
+      - "8086:8086"
+    environment:
+      - EUREKA_SERVER_URI=http://discovery:8761/eureka
+      - MONGODB_URI=mongodb://localhost:27018/courzelo
+    networks:
+      - mynetwork
+    depends_on:
+      - discovery
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27018:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - mynetwork
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=admin
+      - DB_VENDOR=h2
+    ports:
+      - "8080:8080"
+    networks:
+      - mynetwork
+    command: ["start-dev"]
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    
+
+networks:
+  mynetwork:
+
+volumes:
+  mongo_data:
+  keycloak_data:

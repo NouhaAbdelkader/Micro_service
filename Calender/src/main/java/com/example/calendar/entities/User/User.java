@@ -1,5 +1,6 @@
 package com.example.calendar.entities.User;
 
+import com.example.calendar.entities.Classe.Classe;
 import com.example.calendar.entities.Classe.Grpetudiants;
 import com.example.calendar.entities.Classe.Presence;
 import com.example.calendar.entities.Leave.Leave;
@@ -70,7 +71,7 @@ public class User {
 
     @JsonIgnore
     @DBRef
-    private Class aClass;
+    private Classe aClass;
 
     @JsonIgnore
     @DBRef
