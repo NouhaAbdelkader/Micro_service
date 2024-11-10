@@ -1,7 +1,8 @@
 version: '3.8'
+
 services:
   discovery:
-    build: "C:\\Users\\YOGA X380\\Desktop\\microservice\\Micro_service\\eurekaserver"
+    build: "C:\Users\YOGA X380\Desktop\microservice\Micro_service\eurekaserver"
     ports:
       - "8761:8761"
     networks:
@@ -30,9 +31,10 @@ services:
       - micro_service_network
 
   gateway:
-    build: "C:\\Users\\YOGA X380\\Desktop\\microservice\\Micro_service\\Gateway"
+    build: "C:\Users\YOGA X380\Desktop\microservice\Micro_service\Gateway"
     environment:
       - EUREKA_SERVER_URI=http://discovery:8761/eureka
+      - SPRING_PROFILES_ACTIVE=docker
     ports:
       - "8083:8083"
     depends_on:
@@ -41,7 +43,7 @@ services:
       - micro_service_network
 
   projects:
-    build: "C:\\Users\\YOGA X380\\Desktop\\microservice\\Micro_service\\projects"
+    build: "C:\Users\YOGA X380\Desktop\microservice\Micro_service\projects"
     environment:
       - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka
       - spring.datasource.url=jdbc:postgresql://postgres:5432/projects_database
@@ -58,20 +60,10 @@ services:
     networks:
       - micro_service_network
 
-  gestionuser:
-    build: "C:\\Users\\YOGA X380\\Desktop\\microservice\\Micro_service\\GestionUser(node)"
-    ports:
-      - "4000:4000"
-    depends_on:
-      - discovery
-      - mongo
-    networks:
-      - micro_service_network
+volumes:
+  mongo-data:
+  postgres-data:
 
 networks:
   micro_service_network:
     driver: bridge
-
-volumes:
-  mongo-data:
-  postgres-data:
