@@ -1,0 +1,77 @@
+version: '3.8'
+services:
+  discovery:
+    build: "C:\\Users\\YOGA X380\\Desktop\\microservice\\Micro_service\\eurekaserver"
+    ports:
+      - "8761:8761"
+    networks:
+      - micro_service_network
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: projects_database
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - micro_service_network
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - micro_service_network
+
+  gateway:
+    build: "C:\\Users\\YOGA X380\\Desktop\\microservice\\Micro_service\\Gateway"
+    environment:
+      - EUREKA_SERVER_URI=http://discovery:8761/eureka
+    ports:
+      - "8083:8083"
+    depends_on:
+      - discovery
+    networks:
+      - micro_service_network
+
+  projects:
+    build: "C:\\Users\\YOGA X380\\Desktop\\microservice\\Micro_service\\projects"
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/projects_database
+      - spring.datasource.username=postgres
+      - spring.datasource.password=postgres
+      - spring.datasource.driver-class-name=org.postgresql.Driver
+      - spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "8085:8085"
+    depends_on:
+      - discovery
+      - postgres
+    networks:
+      - micro_service_network
+
+  gestionuser:
+    build: "C:\\Users\\YOGA X380\\Desktop\\microservice\\Micro_service\\GestionUser(node)"
+    ports:
+      - "4000:4000"
+    depends_on:
+      - discovery
+      - mongo
+    networks:
+      - micro_service_network
+
+networks:
+  micro_service_network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+  postgres-data:

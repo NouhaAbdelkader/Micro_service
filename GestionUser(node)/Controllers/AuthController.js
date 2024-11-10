@@ -37,12 +37,6 @@ async login(req, res) {
     }
 }
 
-    
-
-
-
-
-
  // Méthode pour obtenir tous les utilisateurs
  async getAllUsers(req, res) {
     try {
