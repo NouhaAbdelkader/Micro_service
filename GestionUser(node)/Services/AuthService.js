@@ -61,6 +61,18 @@ class UserService {
     async getUserById(userId) {
         return await User.findById(userId);
     }
+    async getUserByEmail(email) {
+        console.log("Searching for user with email:", email);
+        const user = await User.findOne({ email });
+        console.log("User found:", user);
+        return user;
+    }
+    
+    
+    async getUserByKeycloakId(keycloakId) {
+        return await User.findOne({ keycloakId });
+    }
+    
 
     // Méthode pour mettre à jour un utilisateur
     async updateUser(userId, userData) {

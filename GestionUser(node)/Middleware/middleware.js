@@ -2,8 +2,7 @@
 const jwtService = require('../Services/jwtService');
 
 const authMiddleware = (req, res, next) => {
-    const token = req.headers['authorization']?.split(' ')[1]; // Récupérer le token depuis l'en-tête Authorization
-
+    const token = req.headers['authorization'] ?.split(' ')[1];
     if (!token) {
         return res.status(403).send({ message: 'No token provided!' }); // Pas de token fourni
     }

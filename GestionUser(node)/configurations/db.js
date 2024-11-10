@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 
-const connectDB = async () => {
+const connectDB = async() => {
     try {
-        const conn = await mongoose.connect('mongodb://localhost:27017/User');
+        const conn = await mongoose.connect('mongodb://najibagragba:najiba123@mongo:27017/UserDataBase?authSource=admin');
+        //authSource=admin
+
         console.log(`MongoDB connected: ${conn.connection.host}`);
     } catch (error) {
         console.error(`Error: ${error.message}`);

@@ -24,7 +24,7 @@ public class RateQuestionServiceImpl {
     private static final Logger LOGGER = LoggerFactory.getLogger(RateQuestionServiceImpl.class);
 
     public RateQuestion rateQuestion(RateQuestion rate, String questionId, String userId)  {
-        String nodeUserUrl = "http://localhost:4000/api/auth/" + userId;  // Modifier l'URL en fonction de ton serveur Node.js
+        String nodeUserUrl = "http://gestionUser:4000/api/auth/" + userId;  // Modifier l'URL en fonction de ton serveur Node.js
         UserDto u = restTemplate.getForObject(nodeUserUrl, UserDto.class);
         QuestionForum q= questionForumRepo.findQuestionForumById(questionId);
         if (u!= null && q!=null) {
@@ -69,7 +69,7 @@ public class RateQuestionServiceImpl {
         QuestionForum q= questionForumRepo.findQuestionForumById(idQ);
         List<RateQuestion> rates= rateQuestionRepo.findRateQuestionByQuestionForum(q);
         float sum = (float) q.getTotalNbRate() /rates.size();
-        LOGGER.info("rates njouum *******************"+sum);
+        LOGGER.info("rates *******************"+sum);
         return (float) q.getTotalNbRate() /rates.size();
 
 

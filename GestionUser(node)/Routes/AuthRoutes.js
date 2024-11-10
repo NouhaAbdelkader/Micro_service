@@ -1,24 +1,36 @@
 const express = require('express');
 const AuthController = require('../Controllers/AuthController');
-const authMiddleware = require('../Middleware/middleware'); // Chemin vers votre middleware
-
 const router = express.Router();
+const { keycloak } = require('../keycloakConfig');
+const authMiddleware = require('../Middleware/middleware'); // Import de l'instance de Keycloak
 
-// Route d'inscription
+//console.log('Keycloak instanceee1:', keycloak);
+
+//router.post('/register', AuthController.register);
+//router.post('/register', keycloak.protect(), AuthController.register);
+// Route with Keycloak protection
+// Routes protégées par rôle
+// Protected routes
 router.post('/register', AuthController.register);
+
+router.get('/test', authMiddleware, (req, res) => {
+    res.send('Protected route accessed');
+});
 
 // Route de connexion
 router.post('/login', AuthController.login);
 
-// Route pour récupérer tous les utilisateurs
-router.get('/', authMiddleware, AuthController.getAllUsers);
-
-// Route pour récupérer un utilisateur par ID
+// Autres routes protégées
+//router.get('/', keycloak.protect('realm:Teacher'), AuthController.getAllUsers);
+router.get('/getall',AuthController.findusers);
+router.get('/getby/:id',  AuthController.getUserById);
+router.get('/getbymail/:email',  AuthController.getUserByEmail);
+router.get('/getbykeykclockid/:id',  AuthController.getUseBykeycklock);
 router.get('/:id', AuthController.getUserById);
-
-// Route pour mettre à jour un utilisateur
-//router.put('/:id', AuthController.updateUser);
-
-// Route pour supprimer un utilisateur
+router.put('/:id', AuthController.updateUser);
 router.delete('/:id', AuthController.deleteUser);
+
+// Example protected route for getting user details
+
+
 module.exports = router;

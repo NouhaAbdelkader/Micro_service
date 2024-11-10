@@ -39,7 +39,7 @@ public class VoteServiceImpl {
         }
 
     }
-
+    //1
     public Votes add(Votes vote, String userId,String answerId) {
 
         String nodeUserUrl = "http://gestionUser:4000/api/auth/" + userId;  // Modifier l'URL en fonction de ton serveur Node.js
@@ -66,12 +66,12 @@ public class VoteServiceImpl {
         }
         return null ;
     }
+   //2
     public Votes update(Votes votes) {
         Votes vote = voteRepository.findVotesById(votes.getId());
 
         if (vote != null) {
-            // Mettre à jour les attributs de l'entité Vote avec les valeurs de l'objet votes
-            // Assurez-vous de vérifier si chaque attribut est différent avant de le mettre à jour
+
             vote.setVoteType(votes.getVoteType()); // Exemple d'attribut à mettre à jour
 
             Votes savedVote = voteRepository.save(vote); // Enregistrer les modifications dans la base de données
@@ -86,7 +86,7 @@ public class VoteServiceImpl {
         }
         return null;
     }
-
+    //-1
     public void delete(String id) {
         Votes vote=voteRepository.findVotesById(id);
 

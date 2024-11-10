@@ -1,0 +1,200 @@
+version: "3.3"  # Version de Docker Compose
+
+services:
+  discovery:
+    build: D:\bureau\projet-licroService\Micro_service\eurekaserver  # Chemin vers le Dockerfile du serveur Eureka
+    ports:
+      - "8761:8761"  # Port exposé pour Eureka
+    image: "eureka"  # Image nommée pour le service Eureka
+    networks:
+      - micro_service_network
+
+  rabbitmq:
+    image: "rabbitmq:3-management"  # Utilisation de RabbitMQ avec l'interface de gestion
+    ports:
+      - "5672:5672"  # Port AMQP
+      - "15672:15672"  # Port pour l'interface de gestion de RabbitMQ
+    networks:
+      - micro_service_network
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: najibagragba
+      MONGO_INITDB_ROOT_PASSWORD: najiba123
+    volumes:
+      - mongo-data:/data/db  # Persistance des données MongoDB
+    networks:
+      - micro_service_network
+  Gateway:
+    build: D:\bureau\projet-licroService\Micro_service\Gateway  # Chemin vers le Dockerfile du serveur Eureka
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka/ 
+      - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8180/realms/MicroProject
+
+    ports:
+      - "8083:8083"  # Port exposé pour Eureka
+    image: "gateway"  # Image nommée pour le service Eureka
+    depends_on:
+      - discovery  # Assure que le service Eureka est démarré avant
+      - keycloak
+    networks:
+      - micro_service_network
+  
+
+  forumA:
+    build: D:\bureau\projet-licroService\Micro_service\Forum  # Chemin vers le Dockerfile de votre service Forum
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka/  # URL de service Eureka
+      - spring.rabbitmq.host=rabbitmq  # Hôte RabbitMQ
+      - spring.rabbitmq.port=5672  # Port RabbitMQ
+      - spring.rabbitmq.username=guest  # Nom d'utilisateur RabbitMQ
+      - spring.rabbitmq.password=guest  # Mot de passe RabbitMQ
+      - spring.data.mongodb.uri=mongodb://najibagragba:najiba123@mongo:27017/Forumdatabase?authSource=admin  # URI MongoDB
+      - spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+      - keycloak.auth-server-url=http://keycloak:8180/auth
+      - keycloak.realm=MicroProject
+      - keycloak.resource=Forum
+      - keycloak.public-client=true
+      - keycloak.credentials.secret=xUcwn5vtCMnpNKHSbS1rmUdO8jV7yQV7
+      - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8180/realms/MicroProject
+      - spring.security.oauth2.resourceserver.jwt.jwk-set-uri=http://keycloak:8180/realms/MicroProject/protocol/openid-connect/certs
+      - SPRING_PROFILES_ACTIVE=docker
+
+
+
+    ports:
+      - "8082:8082"  # Port exposé pour le service Forum
+    image: "forum-service"  # Nom de l'image pour le service Forum
+    depends_on:
+      - discovery  # Assure que le service Eureka est démarré avant
+      - rabbitmq  # Assure que RabbitMQ est démarré avant
+      - mongo  # Assure que MongoDB est démarré avant
+      - keycloak
+    networks:
+      - micro_service_network
+  calendar:
+    build: D:\bureau\projet-licroService\Micro_service\Calender # Chemin vers le Dockerfile de votre service Forum
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka/  # URL de service Eureka
+      - spring.data.mongodb.uri=mongodb://najibagragba:najiba123@mongo:27017/calendar?authSource=admin  # URI MongoDB
+      - spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+      - keycloak.auth-server-url=http://keycloak:8180/auth
+      - keycloak.realm=MicroProject
+      - keycloak.resource=Calender
+      - keycloak.public-client=true
+      - keycloak.credentials.secret=JDhC7eRMK6Zn0weZTsUBBgmVmLUHTXev
+      - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8180/realms/MicroProject
+      - spring.security.oauth2.resourceserver.jwt.jwk-set-uri=http://keycloak:8180/realms/MicroProject/protocol/openid-connect/certs
+      - SPRING_PROFILES_ACTIVE=docker
+
+
+
+    ports:
+      - "8086:8086"  # Port exposé pour le service Forum
+    image: "calender-service"  # Nom de l'image pour le service Forum
+    depends_on:
+      - discovery  # Assure que le service Eureka est démarré avant
+      - mongo  # Assure que MongoDB est démarré avant
+      - keycloak
+    networks:
+      - micro_service_network
+
+  gestionUser:
+    build: D:\bureau\projet-licroService\Micro_service\GestionUser(node)
+    #entrypoint: ["./wait-for-eureka.sh", "node", "server.js"]  # Assurez-vous que le script est accessible et exécutable
+    environment: 
+      - EUREKA_SERVER_URL=http://discovery:8761/eureka/
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest  # Nom d'utilisateur RabbitMQ
+      - RABBITMQ_PASSWORD=guest
+      - MONGODB_URI=mongodb://najibagragba:najiba123@mongo:27017/UserDataBase?authSource=admin
+      - KEYCLOAK_URL=http://keycloak:8180/auth
+      - KEYCLOAK_REALM=MicroProject
+      - KEYCLOAK_CLIENT_ID=gestionUser
+      - KEYCLOAK_CLIENT_SECRET=3chUvMA7cxOcKcLwEK7QrATbLfkVgMc2
+      
+    ports:
+      - "4000:4000"
+    depends_on:
+      - discovery
+      - rabbitmq
+      - mongo
+      - keycloak
+    image: "user-service"
+    networks:
+      - micro_service_network
+  gestionLMS:
+    build:  D:\bureau\LmsProject\projetnodeLms
+    #entrypoint: ["./wait-for-eureka.sh", "node", "server.js"]  # Assurez-vous que le script est accessible et exécutable
+    environment: 
+      - EUREKA_SERVER_URL=http://discovery:8761/eureka/
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USER=guest  # Nom d'utilisateur RabbitMQ
+      - RABBITMQ_PASSWORD=guest
+      - MONGODB_URI=mongodb://najibagragba:najiba123@mongo:27017/moduleDataBase?authSource=admin
+    ports:
+      - "4005:4005"
+    depends_on:
+      - discovery
+      - rabbitmq
+      - mongo
+    image: "lms-service"
+    networks:
+      - micro_service_network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.0
+    environment:
+      KEYCLOAK_ADMIN: admin  # Admin username
+      KEYCLOAK_ADMIN_PASSWORD: admin  # Admin password
+      DB_VENDOR: h2
+      DB_ADDR: localhost
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: keycloak
+      KEYCLOAK_FRONTEND_URL: http://keycloak:8180 
+    command: ["start-dev", "--db-url-properties", ";AUTO_SERVER=FALSE", "--http-port", "8180"]
+    ports:
+      - "8180:8180"  # Map external port 8180 to internal port 8180
+    networks:
+      - micro_service_network
+
+  docker-mysql_1:
+    image: "mysql:5.7"
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=kaddem
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql   # Persistance des données
+    networks:
+      - micro_service_network
+  Projects:
+    build: D:\bureau\projet-licroService\Micro_service\Projects  # Chemin vers le Dockerfile du serveur Eureka
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka/ 
+      - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8180/realms/MicroProject
+
+    ports:
+      - "8085:8085"  # Port exposé pour Eureka
+    image: "projects"  # Image nommée pour le service Eureka
+    depends_on:
+      - discovery  # Assure que le service Eureka est démarré avant
+    networks:
+      - micro_service_network
+
+
+
+networks:
+  micro_service_network:
+    driver: bridge
+
+volumes:
+  mongo-data: 
+  db : # Volume pour persister les données de MongoDB
