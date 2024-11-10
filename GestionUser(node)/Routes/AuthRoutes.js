@@ -23,12 +23,14 @@ router.post('/login', AuthController.login);
 // Autres routes protégées
 //router.get('/', keycloak.protect('realm:Teacher'), AuthController.getAllUsers);
 router.get('/getall',AuthController.findusers);
+router.get('/by-speciality-role', AuthController.getUsersBySpecialityAndRole);
 router.get('/getby/:id',  AuthController.getUserById);
 router.get('/getbymail/:email',  AuthController.getUserByEmail);
 router.get('/getbykeykclockid/:id',  AuthController.getUseBykeycklock);
 router.get('/:id', AuthController.getUserById);
 router.put('/:id', AuthController.updateUser);
 router.delete('/:id', AuthController.deleteUser);
+
 
 // Example protected route for getting user details
 

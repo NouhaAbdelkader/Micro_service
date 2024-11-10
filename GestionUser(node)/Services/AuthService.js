@@ -87,6 +87,10 @@ class UserService {
     async deleteUser(userId) {
         return await User.findByIdAndDelete(userId);
     }
+    async getUsersBySpecialityAndRole(speciality, role) {
+        return await User.find({ speciality, role });
+    }
+
 
 }
 

@@ -180,12 +180,52 @@ services:
     environment:
       - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka/ 
       - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8180/realms/MicroProject
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/projects_database
+      - spring.datasource.username=postgres
+      - spring.datasource.password=postgres
+      - spring.datasource.driver-class-name=org.postgresql.Driver
+      - spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+      - SPRING_PROFILES_ACTIVE=docker
 
     ports:
       - "8085:8085"  # Port exposé pour Eureka
     image: "projects"  # Image nommée pour le service Eureka
     depends_on:
-      - discovery  # Assure que le service Eureka est démarré avant
+      - discovery 
+      - postgres # Assure que le service Eureka est démarré avant
+    networks:
+      - micro_service_network
+  Event:
+    build: D:\bureau\projet-licroService\Micro_service\Event  # Chemin vers le Dockerfile du serveur Eureka
+    environment:
+      - eureka.client.serviceUrl.defaultZone=http://discovery:8761/eureka/ 
+      - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8180/realms/MicroProject
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/projects_database
+      - spring.datasource.username=postgres
+      - spring.datasource.password=postgres
+      - spring.datasource.driver-class-name=org.postgresql.Driver
+      - spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+      - SPRING_PROFILES_ACTIVE=docker
+
+    ports:
+      - "8088:8088"  # Port exposé pour Eureka
+    image: "event-service"  # Image nommée pour le service Eureka
+    depends_on:
+      - discovery 
+      - postgres # Assure que le service Eureka est démarré avant
+    networks:
+      - micro_service_network
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: projects_database
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
     networks:
       - micro_service_network
 
@@ -198,3 +238,4 @@ networks:
 volumes:
   mongo-data: 
   db : # Volume pour persister les données de MongoDB
+  postgres-data:

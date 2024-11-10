@@ -1,4 +1,4 @@
-package com.example.projects.configuration;
+package com.example.event.config;
 
 
 import io.swagger.v3.oas.models.OpenAPI;
@@ -15,14 +15,14 @@ public class SpringDocConfig {
                 .info(infoAPI());
     }
 
-    public io.swagger.v3.oas.models.info.Info infoAPI() {
-        return new Info().title("micro-project")
+    public Info infoAPI() {
+        return new Info().title("Event Module Service")
                 .description("étude de cas")
                 .contact(contactAPI())
-                .version("1");
+                .version("2");
     }
 
-    public io.swagger.v3.oas.models.info.Contact contactAPI() {
-        return new Contact().name("Equipe ASI II");
+    public Contact contactAPI() {
+        return new Contact().name("Equipe DevDynasty");
     }
 }
