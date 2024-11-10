@@ -20,7 +20,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/calendar")
-@Tag(name = "Session management")
 //@CrossOrigin(origins = "http://localhost:4200")
 @AllArgsConstructor
 public class SessionController {
@@ -72,7 +71,7 @@ public class SessionController {
         }
     }
 
-    @GetMapping("/session/sessions/{classId}")
+    @GetMapping("/user/session/sessions/{classId}")
     @PreAuthorize("hasAuthority('user')")
 
     public ResponseEntity<List<Session>> getSessionsByClassId(@PathVariable String classId) {
@@ -101,7 +100,7 @@ public class SessionController {
             List<User> users = sessionService.getUsersBySubjectId(subjectId);
         return ResponseEntity.ok(users);
     }*/
-    @DeleteMapping("/session/delete/{sessionId}")
+    @DeleteMapping("/admin/session/delete/{sessionId}")
     @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> deleteSession(@PathVariable String sessionId) {
         try {
@@ -111,7 +110,7 @@ public class SessionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting session");
         }
     }
-    @PutMapping("/session/cancel/{sessionId}")
+    @PutMapping("/user/session/cancel/{sessionId}")
     @PreAuthorize("hasAuthority('user')")
     public ResponseEntity<?> cancelSession(@PathVariable String sessionId) {
         try {
@@ -151,7 +150,8 @@ public class SessionController {
         }
     }
 
-    @PostMapping("/session/sessions/{classId}/auto/{weekStartDate}")
+    @PostMapping("/admin/session/sessions/{classId}/auto/{weekStartDate}")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<?> generateSessionsForClassAndWeekk(@PathVariable String classId, @PathVariable LocalDate weekStartDate) {
         List<Session> newSessions = sessionService.generateSessionsForClassAndWeek(classId,weekStartDate);
         if (newSessions != null) {
@@ -166,7 +166,7 @@ public class SessionController {
         List<SessionAuditLog> sessionAuditLogs = sessionService.getAllSessionAuditLogs();
         return ResponseEntity.ok(sessionAuditLogs);
     }
-    @GetMapping("/session/percentage-by-month/{teacherId}")
+    @GetMapping("/admin/session/percentage-by-month/{teacherId}")
     @PreAuthorize("hasAuthority('admin')")
     public Map<String, Integer> getPercentageCatchUpByMonthForTeacher(@PathVariable String teacherId) {
         return sessionService.getPercentageCatchUpByMonthForTeacher(teacherId);
@@ -185,7 +185,8 @@ public class SessionController {
         String sessionStatus = sessionService.getTeacherSessionStatus(teacherId);
         return ResponseEntity.ok(sessionStatus);
     }
-    @PostMapping("/session/teacher/exam-sessions/{classId}/{weekStartDate}/{examDuration}")
+    @PostMapping("/admin/session/teacher/exam-sessions/{classId}/{weekStartDate}/{examDuration}")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<List<Session>> generateExamSessionsForTeacher(@PathVariable String classId,
                                                                         @PathVariable LocalDate weekStartDate,
                                                                         @PathVariable Duration examDuration) {
@@ -196,7 +197,8 @@ public class SessionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    @GetMapping("/session/this-week/{classId}")
+    @GetMapping("/user/session/this-week/{classId}")
+    @PreAuthorize("hasAuthority('user')")
     public ResponseEntity<String> checkExamsThisWeekForClass(@PathVariable String classId) {
         String reminderMessage = sessionService.checkExamsThisWeekForClass(classId);
         return new ResponseEntity<>(reminderMessage, HttpStatus.OK);

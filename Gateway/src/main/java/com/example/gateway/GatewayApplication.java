@@ -22,7 +22,7 @@ public class GatewayApplication {
                         .uri("http://localhost:8084/"))
 
                 .route("Calendar",r->r.path("/**")
-                        .uri("http://localhost:8086/calendar/"))
+                        .uri("http://calendar:8086/calendar/"))
 
                 .route("Event",r->r.path("/event/**")
                         .uri("http://localhost:8088/"))

@@ -29,17 +29,6 @@ public class Subject {
     private Date createdDate;
     private Date updatedDate;
     private Boolean isPublished;
-    private List<String> chapterIds= new ArrayList<>(); // Store Chapter IDs
-    @DBRef
-    @JsonIgnore
-    private List<Chapter> chapters;
-    @DBRef
-    @JsonIgnore
-    private List<Activity> Activities;
-   /* @DBRef
-    @JsonManagedReference
-   @JsonIgnore
-    private List<Assessment> assessments;*/
 
 
     //////liste de teacher eli i9ariw fel matiere hedhi//////

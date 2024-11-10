@@ -1,8 +1,6 @@
 package com.example.calendar.entities.User;
 
 import com.example.calendar.entities.Classe.Classe;
-import com.example.calendar.entities.Classe.Grpetudiants;
-import com.example.calendar.entities.Classe.Presence;
 import com.example.calendar.entities.Leave.Leave;
 import com.example.calendar.entities.specialities.Speciality;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -12,9 +10,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -71,17 +67,11 @@ public class User {
 
     @JsonIgnore
     @DBRef
-    private Classe aClass;
+    private Classe classe;
 
     @JsonIgnore
     @DBRef
     private Speciality speciality;
-    @JsonIgnore
-    @DBRef
-    private List<Presence> presences = new ArrayList<>();
-    @JsonIgnore
-    @DBRef
-    private Grpetudiants grpetudiants;
 
 
 

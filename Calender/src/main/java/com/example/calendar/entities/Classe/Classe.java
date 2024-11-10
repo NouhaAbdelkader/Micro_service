@@ -29,20 +29,6 @@ public class Classe implements Serializable {
 
     @JsonIgnore
     @DBRef
-    private List<Grpetudiants> groupetudiants = new ArrayList<>();
-
-    @JsonIgnore
-    private List<User> studentSet = new ArrayList<>();
-    @JsonIgnore
-    @DBRef
-    private List<SessionClass> sessionSet = new ArrayList<>() ;
-    @JsonIgnore
-    @DBRef
     private Speciality speciality;
 
-    public static final int maxStudentsPerGroup = 5;
-
-    public String getId() {
-        return classId;
-    }
 }

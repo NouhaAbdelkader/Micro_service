@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 @KeycloakConfiguration
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -66,8 +65,8 @@ public class KeycloakSecurityConfig {
             // Extraction des rôles depuis resource_access
             if (jwt.getClaim("resource_access") != null) {
                 Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
-                if (resourceAccess.containsKey("Calendar")) {
-                    Map<String, Object> calendar = (Map<String, Object>) resourceAccess.get("Calendar");
+                if (resourceAccess.containsKey("Calender")) {
+                    Map<String, Object> calendar = (Map<String, Object>) resourceAccess.get("Calender");
                     if (calendar.containsKey("roles")) {
                         List<String> roles = (List<String>) calendar.get("roles");
                         roles.stream()

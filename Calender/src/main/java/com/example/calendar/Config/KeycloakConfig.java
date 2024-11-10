@@ -7,7 +7,7 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 @Configuration
 public class KeycloakConfig {
 
@@ -18,13 +18,13 @@ public class KeycloakConfig {
     }
 
     static Keycloak keycloak = null;
-    final static String serverUrl = "http://localhost:8080/auth";
-    public final static String realm = "CouzeloKeycloak";
-    public final static String clientId = "Calendar";
+    final static String serverUrl = "http://keycloak:8080/auth";
+    public final static String realm = "MicroProject";
+    public final static String clientId = "Calender";
     final static String clientSecret =
-            "jORM4FkxvT5tBOFj6Dt0rdwY3G0cnwuB";
-    final static String userName = "admin";
-    final static String password = "admin";
+            "RlhOwJGCqsu2bCzL5Qky8jiRTIhU1MBr";
+    final static String userName = "myriam2001";
+    final static String password = "myriam2001";
 
     public KeycloakConfig() {
     }

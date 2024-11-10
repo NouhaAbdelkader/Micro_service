@@ -1,5 +1,6 @@
 package com.example.calendar.entities.specialities;
 
+import com.example.calendar.entities.Classe.Classe;
 import com.example.calendar.entities.Modules.Modules;
 import com.example.calendar.entities.Programmes.Programme;
 import com.example.calendar.entities.User.User;
@@ -32,7 +33,7 @@ public class Speciality  {
     private List<User> studentSet;
 
     @DBRef
-    private List<Class> classes;
+    private List<Classe> classes;
 
 
 }
