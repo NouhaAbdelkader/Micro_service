@@ -22,27 +22,22 @@ public class GatewayApplication {
     public RouteLocator gatewayRoutes(RouteLocatorBuilder  builder) {
         return builder.routes()
 
-                .route("condidatNaj", r->r.path("/candidat/**")
-                        .uri("http://localhost:8089/"))//candidat:8080
-
-
                 .route("Evaluation",r->r.path("/evaluation/**")
                         .uri("http://localhost:8084/"))
 
-
-
                 .route("Event",r->r.path("/event/**")
-                        .uri("http://localhost:8088/"))
+                        .uri("http://Event:8088/"))
 
                 .route("Forum",r->r.path("/forum/**")
                         .uri("http://forumA:8082/"))
                 .route("User",r->r.path("/api/auth/**")
                         .uri("http://gestionUser:4000/"))
+
                 .route("Lms",r->r.path("/api/modules/**")
                         .uri("http://gestionLMS:4005/"))
 
-                .route("Project",r->r.path("/project/**")
-                        .uri("http://localhost:8085/"))
+                .route("Projects",r->r.path("/project/**")
+                        .uri("http://Projects:8085/"))
 
                 .route("Recrutement",r->r.path("/recrutement/**")
                         .uri("http://localhost:8087/"))
