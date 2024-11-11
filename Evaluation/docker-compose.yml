@@ -33,6 +33,7 @@ services:
       - user-service
       - lms-service
 
+
   user-service:
     build:
       context: C:\Users\msi\Desktop\GestionUser(node) # Chemin vers le projet Node.js
