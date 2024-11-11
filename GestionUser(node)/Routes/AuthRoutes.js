@@ -24,7 +24,4 @@ router.put('/:id', AuthController.updateUser);
 // Route pour supprimer un utilisateur
 router.delete('/:id', AuthController.deleteUser);
 
-
-
-
 module.exports = router;
