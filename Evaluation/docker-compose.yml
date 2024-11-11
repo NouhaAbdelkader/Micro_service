@@ -1,0 +1,56 @@
+version: '3.8'
+services:
+
+  eureka-server:
+    build:
+      context: C:\Users\msi\Desktop\code\eurekaserver # Chemin vers votre projet Eureka
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - app-network
+
+  api-gateway:
+      build:
+        context: C:\Users\msi\Desktop\code\Gateway # Chemin vers votre projet Gateway
+        dockerfile: Dockerfile
+      ports:
+        - "8083:8083"
+      networks:
+        - app-network
+      depends_on:
+        - eureka-server
+
+  evaluation-service:
+    build:
+      context: .  # Si vous êtes dans le répertoire racine du projet
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+    networks:
+      - app-network
+    depends_on:
+      - user-service
+      - lms-service
+
+  user-service:
+    build:
+      context: C:\Users\msi\Desktop\GestionUser(node) # Chemin vers le projet Node.js
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    networks:
+      - app-network
+
+  lms-service:
+    build:
+      context: C:\Users\msi\Desktop\lms-node\LmsProject-node- # Chemin vers le projet Node.js
+      dockerfile: Dockerfile
+    ports:
+      - "4005:4005"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
