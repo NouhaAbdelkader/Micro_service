@@ -1,0 +1,60 @@
+services:
+  # Recruitment Service (Node.js)
+  recruitment:
+    build:
+      context: D:/Esprit/5eme SAE/micro-back/Micro_service/Recrutement # Path to your Node.js project
+      dockerfile: dockerfile # Ensure you have a Dockerfile in the specified directory
+    container_name: recruitment
+    ports:
+      - "8087:8087" # Mapping internal port 8087 to external port 8087
+    networks:
+      - microservices_network
+    depends_on:
+      - mysql # Depends on the MySQL service
+
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "3306:3306" # Exposing MySQL on port 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "" # No password for root user
+      MYSQL_DATABASE: micro # Initial database name
+    volumes:
+      - mysql-data:/var/lib/mysql # Persisting MySQL data
+    networks:
+      - microservices_network
+
+  # Gateway Service (Spring Boot)
+  gateway:
+    build:
+      context: D:/Esprit/5eme SAE/micro-back/Micro_service/Gateway # Path to your Gateway project
+      dockerfile: dockerfile # Ensure you have a Dockerfile in the specified directory
+    container_name: gateway
+    ports:
+      - "8083:8083" # Mapping internal port 8083 to external port 8083
+    networks:
+      - microservices_network
+    depends_on:
+      - eureka # Depends on the Eureka service
+
+  # Eureka Server Service (Spring Boot)
+  eureka:
+    build:
+      context: D:/Esprit/5eme SAE/micro-back/Micro_service/eurekaserver # Path to your Eureka Server project
+      dockerfile: dockerfile # Ensure you have a Dockerfile in the specified directory
+    container_name: eureka
+    ports:
+      - "8761:8761" # Exposing Eureka on port 8761
+    networks:
+      - microservices_network
+
+# Volumes for persistent data
+volumes:
+  mysql-data:
+
+# Network for communication between services
+networks:
+  microservices_network:
+    driver: bridge
